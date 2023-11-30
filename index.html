@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Generador de Encuestas</h1>
+    
+    <form id="encuestaForm">
+        <label for="pregunta">Pregunta:</label>
+        <input type="text" id="pregunta" required>
+        <br>
+        
+        <div id="opciones">
+            <label for="opcion">Opción:</label>
+            <input type="text" id="opcion">
+            <button type="button" id="agregarOpcion">Agregar Opción</button>
+        </div>
+        
+        <ul id="listaOpciones">
+            <!-- aca se muestran las opciones -->
+        </ul>
+        
+        <button type="button" id="generarEncuesta">Generar Encuesta</button>
+    </form>
+
+    <div id="encuestaGenerada">
+        <!-- aca se muestra la encuesta generada -->
+    </div>
+
+    <div id="resultados">
+        <!-- aca se muestran los resultados -->
+    </div>
+
+    <button type="button" id="volverARealizarEncuesta" style="display: none;">Volver a realizar encuesta</button>
+
+
+
+    <script src="./js/index.js"></script>
+</body>
+</html>
