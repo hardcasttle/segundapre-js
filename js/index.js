@@ -1,4 +1,4 @@
-// Recuperar opciones y resultados almacenados en localStorage
+// recuperar opciones y resultados almacenados en localStorage
 const opcionesGuardadas = JSON.parse(localStorage.getItem('opcionesArray')) || [];
 const resultadosGuardados = JSON.parse(localStorage.getItem('resultados')) || {};
 
@@ -8,14 +8,35 @@ const resultados = resultadosGuardados;
 // array para almacenar opciones de la encuesta
 const opcionesArray = opcionesGuardadas;
 
-// función para guardar opciones y resultados en localStorage
+// funcion para guardar opciones y resultados en localStorage
 function guardarEnLocalStorage() {
     localStorage.setItem('opcionesArray', JSON.stringify(opcionesArray));
     localStorage.setItem('resultados', JSON.stringify(resultados));
 }
 
+// funcion para realizar la operacion asincrona con fetch
+function enviarResultadosAlServidor(resultados) {
+    const url = 'https://ejemplo.com/api/guardarResultados'; // Reemplaza con la URL de tu servidor
+    return fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(resultados),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Resultados enviados al servidor:', data);
+    })
+    .catch(error => {
+        console.error('Error al enviar resultados:', error);
+    });
+}
+
 // evento al hacer clic en "agregar opcion"
-document.getElementById("agregarOpcion").addEventListener("click", function () {
+document.getElementById("agregarOpcion").addEventListener("click", function (e) {
+    e.preventDefault(); // Evitar que el formulario se envíe automáticamente
+
     // captura la opcion ingresada por el usuario
     const opcionInput = document.getElementById("opcion");
     const opcion = opcionInput.value.trim();
@@ -26,7 +47,7 @@ document.getElementById("agregarOpcion").addEventListener("click", function () {
         document.getElementById("listaOpciones").appendChild(document.createElement("li")).textContent = opcion;
         opcionInput.value = "";
 
-        // guarda opciones en localStorage
+        // Guarda opciones en localStorage
         guardarEnLocalStorage();
     }
 });
@@ -36,7 +57,7 @@ document.getElementById("generarEncuesta").addEventListener("click", function ()
     // captura la pregunta ingresada por el usuario
     const pregunta = document.getElementById("pregunta").value;
 
-    // genera el formulario de encuesta dinámicamente
+    // genera el formulario de encuesta dinamicamente
     let encuestaHTML = `<h2>${pregunta}</h2><form id='encuestaFormulario'>`;
 
     opcionesArray.forEach(opcion => {
@@ -47,9 +68,8 @@ document.getElementById("generarEncuesta").addEventListener("click", function ()
     encuestaHTML += '<button type="submit">Enviar Encuesta</button></form>';
     document.getElementById("encuestaGenerada").innerHTML = encuestaHTML;
     document.getElementById("volverARealizarEncuesta").style.display = "none";
-    document.getElementById("listaOpciones").innerHTML = "";
 
-    // agregar evento submit después de generar el formulario
+    // agrega evento submit despues de generar el formulario
     document.getElementById("encuestaFormulario").addEventListener("submit", function (event) {
         event.preventDefault();
         // captura la respuesta seleccionada por el usuario
@@ -59,10 +79,12 @@ document.getElementById("generarEncuesta").addEventListener("click", function ()
         respuestaElegida && (resultados[respuestaElegida.value]++, mostrarResultados());
         // guarda resultados en localStorage
         guardarEnLocalStorage();
+        // envia resultados al servidor utilizando fetch y promesas
+        enviarResultadosAlServidor(resultados);
     });
 });
 
-// función para mostrar resultados
+// funcion para mostrar resultados
 function mostrarResultados() {
     let resultadosHTML = "<h2>Resultados de la Encuesta</h2><ul>";
 
